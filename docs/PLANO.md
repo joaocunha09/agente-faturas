@@ -84,7 +84,7 @@ Tarefas marcadas **[Obrigatório]** fazem parte do entregável do sprint. As mar
 
 **Pronto quando:** o repositório está no GitHub com os três documentos, o `.gitignore` e o `.env.example`; o `.env` local existe e não aparece no `git status`.
 
-### [ ] S1.2 Estrutura do projeto e ferramentas [Obrigatório] (~1 h)
+### [x] S1.2 Estrutura do projeto e ferramentas [Obrigatório] (~1 h)
 - Criar a árvore de pastas do `CLAUDE.md` (secção Estrutura).
 - `backend/pyproject.toml` com:
   - dependências: `fastapi`, `uvicorn[standard]`, `pydantic`, `pydantic-settings`, `pyyaml`, `anthropic`, `supabase`, `httpx`, `python-multipart`, `zxing-cpp`, `opencv-python-headless`, `pypdfium2`, `pillow`, `qrcode`, `reportlab`;
@@ -145,6 +145,7 @@ Ficheiro: `nucleo/qr.py`. Especificação em `docs/REGRAS_AT.md`, secção 1.
 ### [ ] S1.6 Taxas de IVA com vigência [Obrigatório] (~1 h)
 Ficheiros: `config/iva.yaml`, `nucleo/iva.py`. Tabela em `docs/REGRAS_AT.md`, secção 4.
 - YAML com uma lista de períodos por espaço fiscal (`desde`, `ate` opcional, `reduzida`, `intermedia`, `normal`), com comentários sobre as fontes.
+- Resolver o caminho de `CONFIG_DIR`: os comandos correm a partir de `backend/`, por isso `config` relativo apontaria para `backend/config`. Escolher entre resolver o caminho a partir da raiz do repositório ou usar `../config`, e registar a decisão.
 - `taxa(espaco, escalao, data) -> Decimal`; erro se não houver período aplicável.
 
 **Pronto quando:** testes: PT-AC normal em 2019-12-31 = 18; PT-AC normal em 2026-11-23 = 16; PT-MA reduzida em 2024-09-30 = 5 e em 2024-10-01 = 4; PT intermédia em 2026 = 13; espaço desconhecido dá erro.

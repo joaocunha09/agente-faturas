@@ -69,3 +69,19 @@ Contexto: o plano usava `SUPABASE_ANON_KEY` e `SUPABASE_SERVICE_ROLE_KEY`. A Sup
 Opções: A) manter as chaves antigas; B) usar as chaves novas, mas manter os nomes antigos das variáveis; C) usar as chaves novas com nomes novos (`SUPABASE_PUBLISHABLE_KEY`, `SUPABASE_SECRET_KEY`).
 Escolha: C.
 Porquê: A deixaria de funcionar em pouco tempo. B funcionaria (as chaves novas são aceites onde se usavam as antigas), mas o nome da variável não corresponderia ao que o painel mostra. Com C, o nome diz o que lá está. A chave secreta continua a ignorar o RLS, por isso só existe no backend.
+
+
+## D-009: `uv.lock` no repositório
+Data: 2026-11-23
+Contexto: o `pyproject.toml` só indica versões mínimas (`>=`). Sem mais nada, cada instalação pode trazer versões diferentes das dependências e das dependências delas.
+Opções: A) só o `pyproject.toml`; B) `pyproject.toml` e `uv.lock` no repositório.
+Escolha: B.
+Porquê: o lockfile fixa a versão exata de todos os pacotes (66 neste momento), por isso o meu PC, os testes e o deploy no Render instalam o mesmo. A opção A faz sentido para uma biblioteca publicada no PyPI, que tem de funcionar com várias versões. Para uma aplicação, interessa ser reprodutível. 
+Para atualizar dependências: `uv lock --upgrade`, correr os testes e fazer commit do lockfile.
+
+## D-010: regras do ruff
+Data: 2026-11-23
+Contexto: o ruff faz o lint e a formatação. É preciso escolher que regras aplicar e o comprimento máximo da linha.
+Opções: A) regras por defeito (`E4`, `E7`, `E9`, `F`); B) um conjunto escolhido: `E`, `W`, `F`, `I`, `UP`, `B`, `SIM`; C) `ALL`.
+Escolha: B, com `line-length = 100`.
+Porquê: A não ordena imports nem apanha bugs comuns (`B`). C ativa centenas de regras, muitas delas de opinião, e gera ruído para quem está a aprender. B cobre o estilo PEP 8, os erros reais, a ordem dos imports, a sintaxe moderna do Python 3.12, os bugs prováveis e as simplificações. Usamos 100 caracteres em vez de 88 porque os nomes em português são longos (`NIF_ADQUIRENTE_DIFERENTE`, `segundos_em_conferencia`).
