@@ -32,12 +32,12 @@ _CAMPOS_DINHEIRO = {
 _CAMPOS_SO_NO_QR = {"E", "Q", "R", "S"}
 
 # Em cada grupo (I, J, K): (código da base, código do IVA, escalão). A base isenta não tem IVA.
-_ESCALOES = {
+_ESCALOES = (
     ("2", None, Escalao.ISENTA),
     ("3", "4", Escalao.REDUZIDA),
     ("5", "6", Escalao.INTERMEDIA),
     ("7", "8", Escalao.NORMAL),
-}
+)
 
 _GRUPOS_IVA = ("I", "J", "K")
 

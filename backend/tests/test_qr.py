@@ -87,6 +87,13 @@ def test_exemplo_at_base_isenta_tem_iva_zero():
     assert all(linha.iva == 0 for linha in isentas)
 
 
+def test_linhas_de_cada_grupo_pela_ordem_dos_escaloes():
+    # A ordem tem de ser sempre a mesma: a avaliação e o ecrã de conferência dependem dela
+    linhas = interpretar_qr(EXEMPLO_AT).linhas_iva
+    ordem = [Escalao.ISENTA, Escalao.REDUZIDA, Escalao.INTERMEDIA, Escalao.NORMAL]
+    assert [linha.escalao for linha in linhas] == ordem * 3
+
+
 def test_exemplo_at_somas_batem():
     # As contas do REGRAS_AT.md: N = soma dos IVA + M; O = soma das bases + L + N
     dados = interpretar_qr(EXEMPLO_AT)
