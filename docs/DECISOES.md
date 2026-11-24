@@ -108,3 +108,11 @@ Contexto: os NIF portugueses começam por dígitos com significado (pessoas sing
 Opções: A) só o dígito de controlo (módulo 11); B) o dígito de controlo e uma lista de primeiros dígitos permitidos.
 Escolha: A.
 Porquê: o `REGRAS_AT.md` só tem fonte para o algoritmo do módulo 11, e não temos fonte oficial para a lista de prefixos. Uma lista mal feita rejeitaria NIF reais. O resultado é só um alerta `aviso` (`NIF_EMITENTE_INVALIDO`), por isso um falso negativo raro custa pouco. A limitação está fixada num teste (`000000000` passa). Se aparecer a lista oficial com fonte, acrescenta-se a regra.
+
+
+## D-014: parser do QR estrito
+Data: 2026-11-24
+Contexto: o texto do QR pode vir com problemas: um código desconhecido, um campo repetido, uma base sem o IVA correspondente, um valor como `NaN`.
+Opções: A) tolerante: ignorar o que não se percebe e aproveitar o resto; B) estrito: qualquer desvio da especificação da AT lança `QRInvalido`.
+Escolha: B.
+Porquê: há um plano B (o LLM lê a imagem quando o QR falha), por isso um erro não perde a fatura. Um QR meio lido ficaria com origem `qr`, que o sistema trata como a fonte mais fiável, e isso é pior do que não o usar. Exceção deliberada: os valores monetários aceitam qualquer número de casas decimais (`12000.0`), porque o valor não é ambíguo; mas recusam `NaN`, `Infinity`, `1e3`, negativos e vírgulas, que o `Decimal` do Python aceitaria.

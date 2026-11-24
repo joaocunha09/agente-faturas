@@ -134,7 +134,7 @@ Ficheiro: `nucleo/nif.py`. Algoritmo em `docs/REGRAS_AT.md`, secção 3.
 
 **Pronto quando:** testes com `123456789` (válido), `999999990` (válido), `123456780` (inválido), `PT 123 456 789` (válido depois de limpo), textos com letras ou 8 dígitos (inválidos), e 1000 NIF gerados que são todos válidos.
 
-### [ ] S1.5 Parser do QR code [Obrigatório] (~1,5 h)
+### [x] S1.5 Parser do QR code [Obrigatório] (~1,5 h)
 Ficheiro: `nucleo/qr.py`. Especificação em `docs/REGRAS_AT.md`, secção 1.
 - `interpretar_qr(texto: str) -> DadosFatura`: divide por `*` e por `:` (só no primeiro `:`, porque `G` pode ter espaços e `/`); mapeia A–S para os campos; cria uma `LinhaIVA` por base/IVA presente em cada grupo I, J e K, com o espaço fiscal lido de `I1`/`J1`/`K1`; `origem_campos` = `qr` em tudo o que veio do QR.
 - Erros claros para: texto sem os campos obrigatórios, valores não numéricos, datas inválidas.
@@ -160,6 +160,7 @@ Ficheiro: `nucleo/validacoes.py`. Funções puras: recebem `DadosFatura` e conte
 - `ATCUD_FORMATO`: não corresponde a `^[A-Za-z0-9]+-[0-9]+$`.
 - `TIPO_NAO_SUPORTADO`: tipo diferente de `FT`, `FS` e `FR`.
 - `FATURA_RECIBO`: tipo `FR` (informação: já foi paga no ato).
+- Decidir se o campo `E` do QR (estado do documento; `A` = anulado) merece um alerta. Hoje fica só no `qr_bruto` (S1.5).
 - `validar(dados, contexto) -> list[Alerta]` junta todas.
 
 **Pronto quando:** cada alerta tem pelo menos um teste que o provoca e um que não o provoca; o exemplo oficial da AT, com o NIF de adquirente configurado como `999999990`, não gera `SOMA_NAO_BATE` nem `IVA_NAO_BATE` (porque usa as taxas de 2019).
