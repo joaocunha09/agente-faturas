@@ -113,7 +113,7 @@ Decisões já tomadas, a registar:
 
 **Pronto quando:** `uv sync` e `uv run pytest` correm sem erros; `uv run ruff check .` está limpo; `docs/DECISOES.md` tem as decisões D-001 a D-006.
 
-### [ ] S1.3 Modelos de domínio [Obrigatório] (~1 h)
+### [x] S1.3 Modelos de domínio [Obrigatório] (~1 h)
 Ficheiro: `nucleo/modelos.py` (Pydantic v2).
 - `EspacoFiscal`: enum `PT`, `PT-AC`, `PT-MA` (aceitar outros códigos de país como texto).
 - `Escalao`: enum `isenta`, `reduzida`, `intermedia`, `normal`.

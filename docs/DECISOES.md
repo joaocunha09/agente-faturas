@@ -85,3 +85,18 @@ Contexto: o ruff faz o lint e a formatação. É preciso escolher que regras apl
 Opções: A) regras por defeito (`E4`, `E7`, `E9`, `F`); B) um conjunto escolhido: `E`, `W`, `F`, `I`, `UP`, `B`, `SIM`; C) `ALL`.
 Escolha: B, com `line-length = 100`.
 Porquê: A não ordena imports nem apanha bugs comuns (`B`). C ativa centenas de regras, muitas delas de opinião, e gera ruído para quem está a aprender. B cobre o estilo PEP 8, os erros reais, a ordem dos imports, a sintaxe moderna do Python 3.12, os bugs prováveis e as simplificações. Usamos 100 caracteres em vez de 88 porque os nomes em português são longos (`NIF_ADQUIRENTE_DIFERENTE`, `segundos_em_conferencia`).
+
+
+## D-011: os modelos aceitam dados errados mas legíveis
+Data: 2026-11-24
+Contexto: uma fatura pode chegar com problemas (NIF com dígito errado, somas que não batem, tipo de documento não suportado). É preciso decidir se o modelo `DadosFatura` a rejeita ou a aceita.
+Opções: A) validar as regras fiscais no próprio modelo e rejeitar a fatura; B) o modelo só garante tipos e formatos, e as regras fiscais geram alertas (S1.7).
+Escolha: B.
+Porquê: com A, as faturas com problemas desapareceriam, e são precisamente essas que a funcionária tem de ver. Com B, a fatura entra com o problema assinalado (`NIF_EMITENTE_INVALIDO`, `SOMA_NAO_BATE`). O modelo só rejeita o que não se consegue representar: um total `"abc"` ou a data 30 de fevereiro. Por isso, `tipo_documento` é texto e não um enum: uma nota de crédito tem de entrar para gerar `TIPO_NAO_SUPORTADO`.
+
+## D-012: modelos estritos na estrutura
+Data: 2026-11-24
+Contexto: o pipeline preenche a fatura aos poucos (QR, regra, LLM, correção manual). Um nome de campo ou um código de alerta mal escrito pode passar despercebido.
+Opções: A) a configuração por defeito do Pydantic (ignora campos desconhecidos, não valida atribuições, códigos de alerta como texto livre); B) `extra="forbid"`, `validate_assignment=True`, códigos de alerta num enum e `origem_campos` limitado aos campos que existem.
+Escolha: B.
+Porquê: com A, `DadosFatura(totl=...)` era ignorado em silêncio, `dados.total = "abc"` ficava guardado e um alerta `"NIF_ERRADO"` era criado sem ninguém o reconhecer. Com B, todos estes erros falham logo nos testes. O custo é ter de mudar o enum quando surgir um código de alerta novo, o que é desejável: obriga a atualizar a tabela do `CLAUDE.md`.
