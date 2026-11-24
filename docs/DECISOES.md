@@ -100,3 +100,11 @@ Contexto: o pipeline preenche a fatura aos poucos (QR, regra, LLM, correção ma
 Opções: A) a configuração por defeito do Pydantic (ignora campos desconhecidos, não valida atribuições, códigos de alerta como texto livre); B) `extra="forbid"`, `validate_assignment=True`, códigos de alerta num enum e `origem_campos` limitado aos campos que existem.
 Escolha: B.
 Porquê: com A, `DadosFatura(totl=...)` era ignorado em silêncio, `dados.total = "abc"` ficava guardado e um alerta `"NIF_ERRADO"` era criado sem ninguém o reconhecer. Com B, todos estes erros falham logo nos testes. O custo é ter de mudar o enum quando surgir um código de alerta novo, o que é desejável: obriga a atualizar a tabela do `CLAUDE.md`.
+
+
+## D-013: o NIF é validado só pelo dígito de controlo
+Data: 2026-11-24
+Contexto: os NIF portugueses começam por dígitos com significado (pessoas singulares, coletivas, casos especiais). Só o módulo 11 aceita, por exemplo, `000000000`.
+Opções: A) só o dígito de controlo (módulo 11); B) o dígito de controlo e uma lista de primeiros dígitos permitidos.
+Escolha: A.
+Porquê: o `REGRAS_AT.md` só tem fonte para o algoritmo do módulo 11, e não temos fonte oficial para a lista de prefixos. Uma lista mal feita rejeitaria NIF reais. O resultado é só um alerta `aviso` (`NIF_EMITENTE_INVALIDO`), por isso um falso negativo raro custa pouco. A limitação está fixada num teste (`000000000` passa). Se aparecer a lista oficial com fonte, acrescenta-se a regra.

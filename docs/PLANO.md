@@ -127,7 +127,7 @@ Ficheiro: `nucleo/modelos.py` (Pydantic v2).
 
 **Pronto quando:** os modelos existem, com testes que confirmam que valores monetários em texto (`"12000.00"`) passam a `Decimal` e que datas `AAAAMMDD` e `AAAA-MM-DD` passam a `date`.
 
-### [ ] S1.4 Validador de NIF [Obrigatório] (~0,5 h)
+### [x] S1.4 Validador de NIF [Obrigatório] (~0,5 h)
 Ficheiro: `nucleo/nif.py`. Algoritmo em `docs/REGRAS_AT.md`, secção 3.
 - `nif_valido(nif: str) -> bool`: 9 dígitos, dígito de controlo módulo 11; aceitar e limpar espaços e o prefixo `PT`.
 - `gerar_nif_valido(prefixo: str, rng) -> str`: para o gerador de faturas sintéticas.
