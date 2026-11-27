@@ -142,7 +142,7 @@ Ficheiro: `nucleo/qr.py`. Especificação em `docs/REGRAS_AT.md`, secção 1.
 
 **Pronto quando:** o exemplo oficial da AT (copiar de `REGRAS_AT.md`) dá os valores esperados: 3 espaços fiscais, 12 linhas de IVA com base > 0 (contando a isenta), `N = 64000.02`, `O = 513600.58`, data 2019-12-31, `G = "FT AB2019/0035"`; testes para QR sem J e K, `I1:0`, QR com campo `S`, e QR malformado.
 
-### [ ] S1.6 Taxas de IVA com vigência [Obrigatório] (~1 h)
+### [x] S1.6 Taxas de IVA com vigência [Obrigatório] (~1 h)
 Ficheiros: `config/iva.yaml`, `nucleo/iva.py`. Tabela em `docs/REGRAS_AT.md`, secção 4.
 - YAML com uma lista de períodos por espaço fiscal (`desde`, `ate` opcional, `reduzida`, `intermedia`, `normal`), com comentários sobre as fontes.
 - Resolver o caminho de `CONFIG_DIR`: os comandos correm a partir de `backend/`, por isso `config` relativo apontaria para `backend/config`. Escolher entre resolver o caminho a partir da raiz do repositório ou usar `../config`, e registar a decisão.
@@ -161,6 +161,7 @@ Ficheiro: `nucleo/validacoes.py`. Funções puras: recebem `DadosFatura` e conte
 - `TIPO_NAO_SUPORTADO`: tipo diferente de `FT`, `FS` e `FR`.
 - `FATURA_RECIBO`: tipo `FR` (informação: já foi paga no ato).
 - Decidir se o campo `E` do QR (estado do documento; `A` = anulado) merece um alerta. Hoje fica só no `qr_bruto` (S1.5).
+- Quando a taxa não existe (`SemTaxaIVA`: espaço fiscal de outro país ou data anterior a 2019-12-31), gerar um aviso a dizer que o IVA dessa linha não foi verificado, em vez de passar em silêncio. Decidir o código (D-018).
 - `validar(dados, contexto) -> list[Alerta]` junta todas.
 
 **Pronto quando:** cada alerta tem pelo menos um teste que o provoca e um que não o provoca; o exemplo oficial da AT, com o NIF de adquirente configurado como `999999990`, não gera `SOMA_NAO_BATE` nem `IVA_NAO_BATE` (porque usa as taxas de 2019).

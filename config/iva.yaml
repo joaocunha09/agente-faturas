@@ -1,0 +1,41 @@
+#Taxas de IVA (%) por espaço fiscal, com períodos de vigência.
+#Tabelas e fontes: docs/REGRAS_AT.md. seccao 4. Decisoes: D-017 e D-018
+#
+# Cada período vale desde `desde` até ao dia anterior ao `desde` do período seguinte.
+# Não há `ate`: assim, os períodos não se podem sobrepor nem deixar buracos.
+# Os períodos de cada espaço ficam do mais antigo para o mais recente.
+# Taxa nova: acrescentar um período no fim, com a data de entrada em vigor e a fonte.
+#
+# O primeiro período de cada espaço começa em 2019-12-31, a data mais antiga com fonte
+# (o exemplo oficial da AT). O início real está por confirmar; antes desta data não há taxa.
+
+PT:
+  #Continente. Exemplo da AT (2019-12-31); PWC, Guia Fiscal 2026.~
+  - desde: 2019-12-31
+    reduzida: 6
+    intermedia: 13
+    normal: 23
+
+PT-AC:
+  #Açores, antes da reducao da taxa normal. Exemplo da AT (2019-12-31); Garrigues.
+  - desde: 2019-12-31
+    reduzida: 4
+    intermedia: 9
+    normal: 18
+  #Taxa normal de 18% para 16%. Despacho SEAF 194/2021; Ofício-Circulado 30237/2021.
+  - desde: 2021-07-01
+    reduzida: 4
+    intermedia: 9
+    normal: 16
+
+PT-MA:
+  # Madeira. Exemplo da AT (2019-12-31); Ofício-Circulado 25045/2024 (12 % e 22 % desde 1/4/2012).
+  - desde: 2019-12-31
+    reduzida: 5
+    intermedia: 12
+    normal: 22
+  # Taxa reduzida de 5 % para 4 %. Ofício-Circulado 25045/2024.
+  - desde: 2024-10-01
+    reduzida: 4
+    intermedia: 12
+    normal: 22

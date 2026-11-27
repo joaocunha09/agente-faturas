@@ -116,3 +116,32 @@ Contexto: o texto do QR pode vir com problemas: um código desconhecido, um camp
 Opções: A) tolerante: ignorar o que não se percebe e aproveitar o resto; B) estrito: qualquer desvio da especificação da AT lança `QRInvalido`.
 Escolha: B.
 Porquê: há um plano B (o LLM lê a imagem quando o QR falha), por isso um erro não perde a fatura. Um QR meio lido ficaria com origem `qr`, que o sistema trata como a fonte mais fiável, e isso é pior do que não o usar. Exceção deliberada: os valores monetários aceitam qualquer número de casas decimais (`12000.0`), porque o valor não é ambíguo; mas recusam `NaN`, `Infinity`, `1e3`, negativos e vírgulas, que o `Decimal` do Python aceitaria.
+
+
+## D-015: `CONFIG_DIR` relativo à raiz do repositório
+Data: 2026-11-27
+Contexto: os comandos correm a partir de `backend/`, mas a configuração está em `config/`, na raiz. Com `CONFIG_DIR=config`, um caminho relativo à pasta atual apontaria para `backend/config`.
+Opções: A) resolver os caminhos relativos a partir da raiz do repositório, calculada a partir de `configuracao.py`; B) `CONFIG_DIR=../config`, relativo à pasta atual.
+Escolha: A. Um caminho absoluto usa-se tal como está; vazio dá `config`.
+Porquê: com B, o resultado depende da pasta onde o comando corre: o pytest lançado pelo VS Code a partir da raiz procuraria fora do projeto. Com A, `config` e `config/empresa_real` (PLANO, fase 2) significam sempre o mesmo. Limitação: só funciona com o pacote instalado em modo editável (o que o `uv sync` faz). Se um dia for instalado como *wheel*, usar um `CONFIG_DIR` absoluto.
+
+## D-016: o núcleo recebe a tabela de IVA, não lê o YAML
+Data: 2026-11-27
+Contexto: as taxas estão em `config/iva.yaml`, e alguém tem de ler o ficheiro.
+Opções: A) `nucleo/iva.py` lê o YAML quando é importado; B) `configuracao.py`, fora do núcleo, lê o YAML e constrói uma `TabelaIVA`, que o núcleo recebe.
+Escolha: B.
+Porquê: o núcleo é puro (D-002) e recebe as taxas no contexto. Com A, o núcleo dependeria de um ficheiro e da pasta atual, e os testes não conseguiriam usar tabelas próprias. Com B, os testes constroem tabelas pequenas no próprio código, e a fase 2 pode carregar outra configuração sem tocar no núcleo.
+
+## D-017: períodos de IVA só com `desde`
+Data: 2026-11-27
+Contexto: o plano previa períodos com `desde` e `ate` opcional.
+Opções: A) `desde` e `ate`; B) só `desde`: cada período acaba no dia anterior ao `desde` do seguinte.
+Escolha: B.
+Porquê: com A, é possível escrever períodos sobrepostos, buracos entre períodos, um `ate` cujo significado é ambíguo (conta ou não o próprio dia?) ou esquecer de fechar o período antigo ao acrescentar um novo. Cada um destes erros precisaria de validação e de testes. Com B, nenhum deles se consegue escrever. A não traz nenhuma vantagem, porque uma taxa de IVA nunca acaba sem ser substituída por outra; uma medida temporária são dois períodos. Um `ate` escrito por engano é recusado (`extra="forbid"`).
+
+## D-018: o primeiro período começa na data mais antiga com fonte
+Data: 2026-11-27
+Contexto: o `REGRAS_AT.md` não tem fonte para a data de início das taxas anteriores às mudanças de 2021 (Açores) e 2024 (Madeira), nem para as taxas do Continente antes de 2026. A data mais antiga com fonte é a do exemplo oficial da AT: 2019-12-31.
+Opções: A) começar em 2019-12-31 e dar erro (`SemTaxaIVA`) antes disso; B) procurar agora as datas reais.
+Escolha: A.
+Porquê: com A, uma data errada é impossível: antes de 2019-12-31 o sistema diz que não sabe, em vez de dar uma taxa que pode estar errada. B só ajudaria faturas anteriores a 2020, que este projeto não tem, e uma fonte fraca poria no YAML uma data errada com ar de verificada. A S1.7 tem de tratar o `SemTaxaIVA` com um aviso, para que o IVA dessas faturas não passe sem verificação. Se aparecerem fontes oficiais para as datas, muda-se o `desde`.
