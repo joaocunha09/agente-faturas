@@ -10,7 +10,7 @@
 # (o exemplo oficial da AT). O início real está por confirmar; antes desta data não há taxa.
 
 PT:
-  #Continente. Exemplo da AT (2019-12-31); PWC, Guia Fiscal 2026.~
+  #Continente. Exemplo da AT (2019-12-31); PWC, Guia Fiscal 2026.
   - desde: 2019-12-31
     reduzida: 6
     intermedia: 13
